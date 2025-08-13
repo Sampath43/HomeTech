@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | HOMETECH</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(130deg, #e3f0ff 25%, #f1f3f6 50%, #e0e7ff 50%);
+      position: relative;
+      overflow-x: hidden;
+    }
+    .register-bg-appliance {
+      position: absolute;
+      opacity: 0.13;
+      filter: blur(0px) grayscale(0.2);
+      z-index: 0;
+      animation: floatShape 8s ease-in-out infinite alternate;
+    }
+    @keyframes floatShape {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-18px) scale(1.08); }
+    }
+    .register-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .register-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(40,116,240,0.18);
+      padding: 38px 32px 32px 32px;
+      max-width: 370px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .register-card:hover {
+      box-shadow: 0 16px 48px rgba(40,116,240,0.22);
+      transform: scale(1.02);
+    }
+    .register-card h2 {
+      color: #2874f0;
+      margin-bottom: 22px;
+      font-weight: 700;
+    }
+    .form-control {
+      border-radius: 8px;
+      font-size: 1.08rem;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      transition: box-shadow 0.2s;
+    }
+    .form-control:focus {
+      box-shadow: 0 0 0 2px #2874f033;
+      border-color: #2874f0;
+    }
+    .register-btn {
+      width: 100%;
+      background: #2874f0;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.08rem;
+      padding: 12px 0;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .register-btn:hover { background: #1565c0; }
+    .register-error {
+      color: #d32f2f;
+      background: #ffeaea;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 18px;
+      font-size: 1.02rem;
+    }
+    .register-success {
+      color: #388e3c;
+      background: #eaffea;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 18px;
+      font-size: 1.02rem;
+    }
+  </style>
+</head>
+<body>
+  <img src="Images/refrigerator.gif" class="register-bg-appliance" style="width:160px;top:8vh;left:6vw;" alt="Fridge">
+  <img src="Images/ac.gif" class="register-bg-appliance" style="width:120px;top:60vh;left:70vw;" alt="Microwave">
+  <img src="Images/fridge.gif" class="register-bg-appliance" style="width:140px;top:30vh;left:80vw;" alt="TV">
+  <img src="Images/washing-machine.gif" class="register-bg-appliance" style="width:130px;top:80vh;left:12vw;" alt="AC">
+  <div class="register-container">
+    <form class="register-card" method="post" action="register.php" id="registerForm">
+      <h2>Create Your Account</h2>
+      <div id="registerError" class="register-error" style="display:none;"></div>
+      <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+      <input type="password" name="password" class="form-control" placeholder="Create Password" required>
+      <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+      <input type="text" name="mobile" class="form-control" placeholder="Mobile Number" pattern="[0-9]{10}" required>
+      <button type="submit" class="register-btn">Register</button>
+      <div style="margin-top:18px;font-size:0.98rem;">
+        <a href="login.html" style="color:#2874f0;text-decoration:underline;">Already have an account? Login</a>
+      </div>
+    </form>
+  </div>
+  <script>
+    // Show error message based on URL param
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    if (error) {
+      const errorDiv = document.getElementById('registerError');
+      let msg = '';
+      if (error === '1') msg = 'Username already exists.';
+      else if (error === '2') msg = 'Passwords do not match.';
+      else if (error === '3') msg = 'Invalid input. Please check all fields.';
+      if (msg) {
+        errorDiv.textContent = msg;
+        errorDiv.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

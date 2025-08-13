@@ -1,0 +1,166 @@
+<?php
+session_start();
+$products = file_exists('products.json') ? json_decode(file_get_contents('products.json'), true) : [];
+$fridgeCategories = ['Refrigerator', 'Fridge', 'Double Door Refrigerator', 'Single Door Refrigerator', 'Side by Side Refrigerator'];
+$fridgeProducts = array_filter($products, function($product) use ($fridgeCategories) {
+    return isset($product['category']) && in_array(trim($product['category']), $fridgeCategories);
+});
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refrigerators | HOMETECH</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <style>
+      .Products { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin: 32px 0; }
+      .Product-Card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(40,116,240,0.13);
+        width: 260px;
+        text-decoration: none;
+        color: #222;
+        transition: box-shadow 0.18s, transform 0.18s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 18px 12px 16px 12px;
+      }
+      .Product-Card:hover {
+        box-shadow: 0 12px 32px rgba(40,116,240,0.18);
+        transform: translateY(-4px) scale(1.03);
+      }
+      .Product-Image img {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: #f7f7f7;
+        margin-bottom: 12px;
+      }
+      .Content p {
+        font-size: 1.08rem;
+        font-weight: 500;
+        margin: 0 0 8px 0;
+      }
+      .Content .price {
+        color: #2874f0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .Content .desc {
+        font-size: 0.98rem;
+        color: #555;
+        margin-bottom: 8px;
+      }
+      .add-to-cart-btn {
+        background: #2874f0;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.18s;
+      }
+      .add-to-cart-btn:hover { background: #1565c0; }
+      .brand-section { text-align:center; margin: 32px 0 18px 0; }
+    </style>
+  </head>
+  <body>
+    <header class="modern-header">
+      <div class="header-container" style="display:flex;align-items:center;justify-content:space-between;gap:18px;">
+        <a href="index.php" class="brand-name">HOMETECH</a>
+        <nav class="main-navigation" style="flex:1;display:flex;align-items:center;justify-content:flex-start;gap:24px;">
+          <ul class="nav-items" style="display:flex;align-items:center;gap:18px;margin:0;">
+            <li><a href="index.php">Home</a></li>
+            <li><a href="products.php">Explore</a></li>
+            <li class="nav-dropdown">
+              <a href="#">Products <span style="font-size:1.1em;vertical-align:middle;">&#9662;</span></a>
+              <div class="nav-dropdown-menu">
+                <a class="dropdown-item" href="Refrigerator.php"><img src="Images/refrigerator-icon.png" style="width:22px;height:22px;margin-right:10px;vertical-align:middle;">Refrigerator</a>
+                <a class="dropdown-item" href="Oven.php"><img src="Images/microwave-icon.png" style="width:22px;height:22px;margin-right:10px;vertical-align:middle;">Microwave</a>
+                <a class="dropdown-item" href="Television.php"><img src="Images/tv-icon.png" style="width:22px;height:22px;margin-right:10px;vertical-align:middle;">TV</a>
+                <a class="dropdown-item" href="AC.php"><img src="Images/ac-icon.png" style="width:22px;height:22px;margin-right:10px;vertical-align:middle;">AC</a>
+              </div>
+            </li>
+            <li><a href="deals.php">Deals</a></li>
+            <li><a href="services.php">Services</a></li>
+            <li><a href="contact.php">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="nav-actions" style="display:flex;align-items:center;gap:12px;">
+          <a href="cart.php"><img src="Images/shopping-bag.png" alt="Cart" style="width:32px;height:32px;" /></a>
+          <?php if (isset($_SESSION["username"])): ?>
+            <span class="nav-greeting">Welcome, <?php echo htmlspecialchars($_SESSION["username"]); ?></span>
+            <a href="logout.php" class="nav-logout"><img src="Images/logout.png" alt="Logout" style="width:32px;height:32px;"></a>
+          <?php else: ?>
+            <a href="login.html"><img src="Images/user.png" alt="User" style="width:32px;height:32px;" /></a>
+          <?php endif; ?>
+        </div>
+      </div>
+    </header>
+    <div class="brand-section"><h2>Refrigerators</h2></div>
+    <div class="Products">
+      <?php if ($fridgeProducts && count($fridgeProducts) > 0): ?>
+        <?php foreach (array_reverse($fridgeProducts) as $product): ?>
+          <a href="product-details.php?id=<?php echo urlencode($product['id']); ?>" class="Product-Card">
+            <div class="Product-Image">
+              <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
+            </div>
+            <div class="Content">
+              <p><?php echo htmlspecialchars($product['name']); ?></p>
+              <div class="price">₹<?php echo htmlspecialchars($product['price']); ?></div>
+              <div class="desc"><?php echo htmlspecialchars($product['description']); ?></div>
+              <form method="post" action="cart.php" style="margin-top:8px;">
+                <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($product['id']); ?>">
+                <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+              </form>
+            </div>
+          </a>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <p style="text-align:center;width:100%;">No refrigerators found.</p>
+      <?php endif; ?>
+    </div>
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-column">
+          <h3>HOMETECH</h3>
+          <p>Your trusted home appliance partner.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="products.php">Products</a></li>
+            <li><a href="services.php">Services</a></li>
+            <li><a href="register.php">Register</a></li>
+            <li><a href="cart.php">Cart</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Contact Us</h4>
+          <p>Email: support@hometech.com</p>
+          <p>Phone: +91-98765-43210</p>
+        </div>
+        <div class="footer-column">
+          <h4>Follow Us</h4>
+          <div class="footer-social">
+            <a href="#"><img src="Images/icons8-facebook-48.png" alt="Facebook"></a>
+            <a href="#"><img src="Images/instagram.png" alt="Instagram"></a>
+            <a href="#"><img src="Images/twitter.png" alt="Twitter"></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2025 HOMETECH. All rights reserved.
+      </div>
+    </footer>
+  </body>
+</html>

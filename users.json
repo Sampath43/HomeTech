@@ -1,0 +1,20 @@
+[
+    {
+        "username": "admin",
+        "password": "admin123",
+        "role": "admin"
+    },
+    {
+        "username": "Sampath",
+        "password": "1234",
+        "role": "user"
+    },
+    {
+        "firstname": "ABC",
+        "lastname": "DEF",
+        "mobile": "8473847445",
+        "username": "abcdef321",
+        "password": "ABC",
+        "role": "user"
+    }
+]
